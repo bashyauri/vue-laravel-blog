@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+</script>
+
 <template>
   <div class="row">
     <div class="row">
@@ -29,12 +33,12 @@
 
               <br />
 
-              <a href="/login">Login into your account</a>
+              <RouterLink to="/register">Register</RouterLink>
 
               <br /><br />
 
               <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-lg w-100">Register</button>
+                <button type="submit" class="btn btn-primary btn-lg w-100">Login</button>
               </div>
             </form>
           </div>

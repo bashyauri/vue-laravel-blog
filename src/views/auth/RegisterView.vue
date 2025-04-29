@@ -1,3 +1,24 @@
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+import { useVuelidate } from '@vuelidate/core'
+import { required, email } from '@vuelidate/validators'
+import { reactive } from 'vue'
+import type { IRegisterInput } from './actions/CreateUser'
+
+const rules = {
+  name: { required },
+  email: { required, email },
+  password: { required },
+}
+const registerInput = reactive<IRegisterInput>({
+  name: '',
+  email: '',
+  password: '',
+})
+
+const $v = useVuelidate(rules, registerInput)
+</script>
+
 <template>
   <div class="row">
     <div class="row">
@@ -10,6 +31,7 @@
               <div class="form-group">
                 <label for="name">Name</label>
                 <input
+                  v-model="registerInput.name"
                   id="name"
                   class="form-control form-control-lg"
                   type="text"
@@ -20,6 +42,7 @@
               <div class="form-group mt-3">
                 <label for="email">Email</label>
                 <input
+                  v-model="registerInput.email"
                   id="email"
                   class="form-control form-control-lg"
                   type="email"
@@ -30,6 +53,7 @@
               <div class="form-group mt-3">
                 <label for="password">Password</label>
                 <input
+                  v-model="registerInput.password"
                   id="password"
                   class="form-control form-control-lg"
                   type="password"
@@ -39,7 +63,7 @@
 
               <br />
 
-              <a href="/login">Login into your account</a>
+              <RouterLink to="/login">Login into your account</RouterLink>
 
               <br /><br />
 
