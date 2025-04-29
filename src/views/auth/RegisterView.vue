@@ -16,7 +16,26 @@ const registerInput = reactive<IRegisterInput>({
   password: '',
 })
 
-const $v = useVuelidate(rules, registerInput)
+const v$ = useVuelidate(rules, registerInput)
+
+const registerUser = async () => {
+  const result = await v$.value.$validate()
+  if (!result) {
+    console.log('Validation failed:', v$.value.$errors)
+    return
+  }
+  // v$.value.$touch()
+  // if (v$.value.$invalid) {
+  //   return
+  // }
+  // try {
+  //   // Call the API to register the user
+  //   // await registerUserAPI(registerInput)
+  //   console.log('User registered:', registerInput)
+  // } catch (error) {
+  //   console.error('Registration failed:', error)
+  // }
+}
 </script>
 
 <template>
@@ -27,38 +46,35 @@ const $v = useVuelidate(rules, registerInput)
         <div class="card">
           <div class="card-body">
             <h2 align="center">Register</h2>
-            <form action="">
-              <div class="form-group">
+            <form action="" @submit.prevent="registerUser">
+              <div class="form-group" :class="{ error: v$.name.$errors.length }">
                 <label for="name">Name</label>
-                <input
-                  v-model="registerInput.name"
-                  id="name"
-                  class="form-control form-control-lg"
-                  type="text"
-                  placeholder="Enter your name"
-                />
+                <input v-model="registerInput.name" class="form-control form-control-lg" />
+                <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
               </div>
-
-              <div class="form-group mt-3">
-                <label for="email">Email</label>
+              <div class="form-group" :class="{ error: v$.name.$errors.length }">
+                <label for="name">Email</label>
                 <input
                   v-model="registerInput.email"
-                  id="email"
-                  class="form-control form-control-lg"
                   type="email"
-                  placeholder="Enter your email"
+                  class="form-control form-control-lg"
                 />
+                <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
               </div>
-
-              <div class="form-group mt-3">
-                <label for="password">Password</label>
+              <div class="form-group" :class="{ error: v$.name.$errors.length }">
+                <label for="name">Password</label>
                 <input
                   v-model="registerInput.password"
-                  id="password"
-                  class="form-control form-control-lg"
                   type="password"
-                  placeholder="Enter your password"
+                  class="form-control form-control-lg"
                 />
+                <div class="input-errors" v-for="error of v$.password.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
               </div>
 
               <br />
@@ -78,3 +94,12 @@ const $v = useVuelidate(rules, registerInput)
     </div>
   </div>
 </template>
+<style scoped>
+.error-msg {
+  color: red;
+  font-size: 12px;
+}
+.input-errors {
+  margin-top: 5px;
+}
+</style>
