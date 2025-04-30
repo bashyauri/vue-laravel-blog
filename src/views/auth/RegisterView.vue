@@ -4,6 +4,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
 import { reactive } from 'vue'
 import type { IRegisterInput } from './actions/CreateUser'
+import ErrorComponent from '@/components/ErrorComponent.vue'
 
 const rules = {
   name: { required },
@@ -46,36 +47,26 @@ const registerUser = async () => {
         <div class="card">
           <div class="card-body">
             <h2 align="center">Register</h2>
+
             <form action="" @submit.prevent="registerUser">
-              <div class="form-group" :class="{ error: v$.name.$errors.length }">
-                <label for="name">Name</label>
+              <ErrorComponent label="Name" :errors="v$.name.$errors">
                 <input v-model="registerInput.name" class="form-control form-control-lg" />
-                <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </div>
-              <div class="form-group" :class="{ error: v$.name.$errors.length }">
-                <label for="name">Email</label>
+              </ErrorComponent>
+
+              <ErrorComponent label="Email" :errors="v$.email.$errors">
                 <input
                   v-model="registerInput.email"
                   type="email"
                   class="form-control form-control-lg"
                 />
-                <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </div>
-              <div class="form-group" :class="{ error: v$.name.$errors.length }">
-                <label for="name">Password</label>
+              </ErrorComponent>
+              <ErrorComponent label="Password" :errors="v$.email.$errors">
                 <input
                   v-model="registerInput.password"
                   type="password"
                   class="form-control form-control-lg"
                 />
-                <div class="input-errors" v-for="error of v$.password.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </div>
+              </ErrorComponent>
 
               <br />
 
@@ -94,12 +85,3 @@ const registerUser = async () => {
     </div>
   </div>
 </template>
-<style scoped>
-.error-msg {
-  color: red;
-  font-size: 12px;
-}
-.input-errors {
-  margin-top: 5px;
-}
-</style>
