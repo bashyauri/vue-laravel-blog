@@ -1,5 +1,29 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { useVuelidate } from '@vuelidate/core'
+import { required, email } from '@vuelidate/validators'
+import { reactive } from 'vue'
+import ErrorComponent from '@/components/ErrorComponent.vue'
+import type { ILoginInput } from './actions/LoginUser'
+
+const rules = {
+  email: { required, email },
+  password: { required },
+}
+const loginInput = reactive<ILoginInput>({
+  email: '',
+  password: '',
+})
+
+const v$ = useVuelidate(rules, loginInput)
+
+const loginUser = async () => {
+  const result = await v$.value.$validate()
+  if (!result) {
+    console.log('Validation failed:', v$.value.$errors)
+    return
+  }
+}
 </script>
 
 <template>
@@ -10,26 +34,21 @@ import { RouterLink } from 'vue-router'
         <div class="card">
           <div class="card-body">
             <h2 align="center">Login</h2>
-            <form action="">
-              <div class="form-group mt-3">
-                <label for="email">Email</label>
+            <form action="" @submit.prevent="loginUser">
+              <ErrorComponent label="Email" :errors="v$.email.$errors">
                 <input
-                  id="email"
-                  class="form-control form-control-lg"
+                  v-model="loginInput.email"
                   type="email"
-                  placeholder="Enter your email"
-                />
-              </div>
-
-              <div class="form-group mt-3">
-                <label for="password">Password</label>
-                <input
-                  id="password"
                   class="form-control form-control-lg"
-                  type="password"
-                  placeholder="Enter your password"
                 />
-              </div>
+              </ErrorComponent>
+              <ErrorComponent label="Password" :errors="v$.password.$errors">
+                <input
+                  v-model="loginInput.password"
+                  type="password"
+                  class="form-control form-control-lg"
+                />
+              </ErrorComponent>
 
               <br />
 

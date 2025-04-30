@@ -25,17 +25,6 @@ const registerUser = async () => {
     console.log('Validation failed:', v$.value.$errors)
     return
   }
-  // v$.value.$touch()
-  // if (v$.value.$invalid) {
-  //   return
-  // }
-  // try {
-  //   // Call the API to register the user
-  //   // await registerUserAPI(registerInput)
-  //   console.log('User registered:', registerInput)
-  // } catch (error) {
-  //   console.error('Registration failed:', error)
-  // }
 }
 </script>
 
@@ -60,7 +49,7 @@ const registerUser = async () => {
                   class="form-control form-control-lg"
                 />
               </ErrorComponent>
-              <ErrorComponent label="Password" :errors="v$.email.$errors">
+              <ErrorComponent label="Password" :errors="v$.password.$errors">
                 <input
                   v-model="registerInput.password"
                   type="password"
