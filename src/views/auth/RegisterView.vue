@@ -3,7 +3,7 @@ import { RouterLink } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
 import { reactive } from 'vue'
-import type { IRegisterInput } from './actions/CreateUser'
+import { createUser, type IRegisterInput } from './actions/CreateUser'
 import ErrorComponent from '@/components/ErrorComponent.vue'
 
 const rules = {
@@ -24,6 +24,13 @@ const registerUser = async () => {
   if (!result) {
     console.log('Validation failed:', v$.value.$errors)
     return
+  }
+  const data = await createUser(registerInput)
+  if (data) {
+    console.log('User registered successfully:', data)
+    // Optionally redirect or show a success message
+  } else {
+    console.error('Registration failed')
   }
 }
 </script>
@@ -64,7 +71,15 @@ const registerUser = async () => {
               <br /><br />
 
               <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-lg w-100">Register</button>
+                <button class="btn btn-primary w-100">
+                  <i class="bi bi-home"></i>
+                  <span>Register</span>
+                  <div class="d-flex justify-content-center">
+                    <div :class="`spinner-border`" role="status">
+                      <span class="visually-hidden">Loading... </span>
+                    </div>
+                  </div>
+                </button>
               </div>
             </form>
           </div>
