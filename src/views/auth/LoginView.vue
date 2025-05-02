@@ -36,7 +36,6 @@ const handleLogin = async () => {
     if (data.isLogged) {
       loginInput.email = ''
       loginInput.password = ''
-      localStorage.setItem('token', data.token)
       localStorage.setItem('userData', JSON.stringify(data.user))
       window.location.href = '/admin'
       // successMsg(data.message)
