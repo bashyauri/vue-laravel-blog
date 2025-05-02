@@ -21,12 +21,11 @@ const registerInput = reactive<IRegisterInput>({
 })
 
 const v$ = useVuelidate(rules, registerInput)
-
 const loading = ref(false)
 
 const registerUser = async () => {
   const result = await v$.value.$validate()
-  loading.value = false
+
   if (!result) {
     console.log('Validation failed:', v$.value.$errors)
     return
@@ -84,7 +83,7 @@ const registerUser = async () => {
               <br /><br />
 
               <div class="form-group">
-                <BaseBtn :loading="loading" label="register" icon="check" />
+                <BaseBtn :loading="loading" label="Login" icon="check" />
                 <!-- <button class="btn btn-primary w-100">
                   <i class="bi bi-home"></i>
                   <span>Register</span>

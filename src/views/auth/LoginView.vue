@@ -4,7 +4,10 @@ import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
 import { reactive } from 'vue'
 import ErrorComponent from '@/components/ErrorComponent.vue'
-import type { ILoginInput } from './actions/LoginUser'
+import { loginUser, type ILoginInput } from './actions/LoginUser'
+import { ref } from 'vue'
+import { showError, successMsg } from '../../../helper/ToastNotification'
+import BaseBtn from '@/components/BaseBtn.vue'
 
 const rules = {
   email: { required, email },
@@ -16,12 +19,34 @@ const loginInput = reactive<ILoginInput>({
 })
 
 const v$ = useVuelidate(rules, loginInput)
+const loading = ref(false)
 
-const loginUser = async () => {
+const handleLogin = async () => {
   const result = await v$.value.$validate()
+  loading.value = false
   if (!result) {
-    console.log('Validation failed:', v$.value.$errors)
+    showError('Validation failed:' + v$.value.$errors)
     return
+  }
+  try {
+    loading.value = true
+    const data = await loginUser(loginInput)
+
+    v$.value.$reset()
+    if (data.isLogged) {
+      loginInput.email = ''
+      loginInput.password = ''
+      localStorage.setItem('token', data.token)
+      localStorage.setItem('userData', JSON.stringify(data.user))
+      window.location.href = '/admin'
+      // successMsg(data.message)
+    } else {
+      showError(data.message)
+    }
+  } catch (error) {
+    showError((error as Error).message)
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -34,7 +59,7 @@ const loginUser = async () => {
         <div class="card">
           <div class="card-body">
             <h2 align="center">Login</h2>
-            <form action="" @submit.prevent="loginUser">
+            <form action="" @submit.prevent="handleLogin">
               <ErrorComponent label="Email" :errors="v$.email.$errors">
                 <input
                   v-model="loginInput.email"
@@ -57,7 +82,7 @@ const loginUser = async () => {
               <br /><br />
 
               <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-lg w-100">Login</button>
+                <BaseBtn :loading="loading" label="Login" icon="check" />
               </div>
             </form>
           </div>
