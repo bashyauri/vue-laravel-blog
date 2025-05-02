@@ -2,9 +2,12 @@
 import { RouterLink } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { createUser, type IRegisterInput } from './actions/CreateUser'
+
 import ErrorComponent from '@/components/ErrorComponent.vue'
+import { showError, successMsg } from '../../../helper/ToastNotification'
+import BaseBtn from '@/components/BaseBtn.vue'
 
 const rules = {
   name: { required },
@@ -19,18 +22,28 @@ const registerInput = reactive<IRegisterInput>({
 
 const v$ = useVuelidate(rules, registerInput)
 
+const loading = ref(false)
+
 const registerUser = async () => {
   const result = await v$.value.$validate()
+  loading.value = false
   if (!result) {
     console.log('Validation failed:', v$.value.$errors)
     return
   }
-  const data = await createUser(registerInput)
-  if (data) {
-    console.log('User registered successfully:', data)
-    // Optionally redirect or show a success message
-  } else {
-    console.error('Registration failed')
+
+  try {
+    loading.value = true
+    const data = await createUser(registerInput)
+    successMsg(data.message)
+    v$.value.$reset()
+    registerInput.name = ''
+    registerInput.email = ''
+    registerInput.password = ''
+  } catch (error) {
+    showError((error as Error).message)
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -71,7 +84,8 @@ const registerUser = async () => {
               <br /><br />
 
               <div class="form-group">
-                <button class="btn btn-primary w-100">
+                <BaseBtn :loading="loading" label="register" icon="check" />
+                <!-- <button class="btn btn-primary w-100">
                   <i class="bi bi-home"></i>
                   <span>Register</span>
                   <div class="d-flex justify-content-center">
@@ -79,7 +93,7 @@ const registerUser = async () => {
                       <span class="visually-hidden">Loading... </span>
                     </div>
                   </div>
-                </button>
+                </button> -->
               </div>
             </form>
           </div>
