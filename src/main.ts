@@ -8,6 +8,7 @@ import Toast from 'vue-toastification'
 import type { PluginOptions } from 'vue-toastification'
 // Import the CSS or use your own!
 import 'vue-toastification/dist/index.css'
+import { CkeditorPlugin } from '@ckeditor/ckeditor5-vue'
 
 import App from './App.vue'
 import router from './router'
@@ -20,6 +21,8 @@ const options: PluginOptions = {
 app.use(Toast, options)
 
 app.use(createPinia())
+app.use(CkeditorPlugin)
+
 app.use(router)
 
 app.mount('#app')

@@ -8,5 +8,15 @@ export const adminRoutes = {
       name: 'admin',
       component: () => import('../../views/admin/DashboardView.vue'),
     },
+    {
+      path: '/create-post',
+      name: 'create-post',
+      component: () => import('../../views/admin/CreatePostView.vue'),
+    },
+    {
+      path: '/post-lists',
+      name: 'post-lists',
+      component: () => import('../../views/admin/PostListView.vue'),
+    },
   ],
 }

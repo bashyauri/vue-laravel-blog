@@ -9,7 +9,9 @@ defineProps<{
 
 <template>
   <div class="form-group" :class="{ error: errors.length }">
-    <label for="name">{{ label }}</label>
+    <label for="name"
+      ><strong>{{ label }}</strong></label
+    >
     <slot></slot>
     <div class="input-errors" v-for="error of errors" :key="error.$uid">
       <div class="error-msg">{{ error.$message }}</div>
