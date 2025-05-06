@@ -2,11 +2,11 @@
 import { RouterLink } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
-import { reactive, ref } from 'vue'
-import { createUser, type IRegisterInput } from './actions/CreateUser'
+
+import { useCreateUser } from './actions/CreateUser'
 
 import ErrorComponent from '@/components/ErrorComponent.vue'
-import { showError, successMsg } from '../../../helper/ToastNotification'
+
 import BaseBtn from '@/components/BaseBtn.vue'
 
 const rules = {
@@ -14,14 +14,9 @@ const rules = {
   email: { required, email },
   password: { required },
 }
-const registerInput = reactive<IRegisterInput>({
-  name: '',
-  email: '',
-  password: '',
-})
+const { loading, createUser, registerInput } = useCreateUser()
 
 const v$ = useVuelidate(rules, registerInput)
-const loading = ref(false)
 
 const registerUser = async () => {
   const result = await v$.value.$validate()
@@ -31,19 +26,8 @@ const registerUser = async () => {
     return
   }
 
-  try {
-    loading.value = true
-    const data = await createUser(registerInput)
-    successMsg(data.message)
-    v$.value.$reset()
-    registerInput.name = ''
-    registerInput.email = ''
-    registerInput.password = ''
-  } catch (error) {
-    showError((error as Error).message)
-  } finally {
-    loading.value = false
-  }
+  await createUser()
+  v$.value.$reset()
 }
 </script>
 
