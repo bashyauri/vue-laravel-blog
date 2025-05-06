@@ -2,24 +2,20 @@
 import { RouterLink } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
-import { reactive } from 'vue'
+
 import ErrorComponent from '@/components/ErrorComponent.vue'
-import { loginUser, type ILoginInput } from './actions/LoginUser'
-import { ref } from 'vue'
-import { showError, successMsg } from '../../../helper/ToastNotification'
+import { useLoginUser } from './actions/LoginUser'
+
+import { showError } from '../../../helper/ToastNotification'
 import BaseBtn from '@/components/BaseBtn.vue'
 
 const rules = {
   email: { required, email },
   password: { required },
 }
-const loginInput = reactive<ILoginInput>({
-  email: '',
-  password: '',
-})
+const { loading, loginUser, loginInput } = useLoginUser()
 
 const v$ = useVuelidate(rules, loginInput)
-const loading = ref(false)
 
 const handleLogin = async () => {
   const result = await v$.value.$validate()
@@ -28,25 +24,7 @@ const handleLogin = async () => {
     showError('Validation failed:' + v$.value.$errors)
     return
   }
-  try {
-    loading.value = true
-    const data = await loginUser(loginInput)
-
-    v$.value.$reset()
-    if (data.isLogged) {
-      loginInput.email = ''
-      loginInput.password = ''
-      localStorage.setItem('userData', JSON.stringify(data.user))
-      window.location.href = '/admin'
-      // successMsg(data.message)
-    } else {
-      showError(data.message)
-    }
-  } catch (error) {
-    showError((error as Error).message)
-  } finally {
-    loading.value = false
-  }
+  await loginUser()
 }
 </script>
 
