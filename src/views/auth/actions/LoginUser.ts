@@ -7,7 +7,7 @@ export interface ILoginInput {
   email: string
   password: string
 }
-export interface ILoginResponseType {
+export type LoginResponseType = {
   user: {
     id: number
     name: string
@@ -26,7 +26,7 @@ export function useLoginUser() {
   async function loginUser() {
     try {
       loading.value = true
-      const data = await makeHttpReq<ILoginInput, ILoginResponseType>('login', 'POST', loginInput)
+      const data = await makeHttpReq<ILoginInput, LoginResponseType>('login', 'POST', loginInput)
       if (data.isLogged) {
         loginInput.email = ''
         loginInput.password = ''
