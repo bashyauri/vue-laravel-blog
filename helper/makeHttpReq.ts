@@ -21,9 +21,10 @@ export async function makeHttpRequest<TInput, TResponse>(
     const defaultHeaders: HttpHeaders = {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      ...(userData?.token && { Authorization: `Bearer ${userData.token}` }),
+      Authorization: 'Bearer ' + userData?.token,
       ...headers,
     }
+    console.log('Token:', userData?.token)
 
     const url = `${APP.laravelApiBaseUrl}/${endpoint.replace(/^\//, '')}`
     const response = await fetch(url, {
