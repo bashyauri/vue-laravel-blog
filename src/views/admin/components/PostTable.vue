@@ -1,3 +1,10 @@
+<script lang="ts" setup>
+import type { GetPostResponseType } from '../actions/GetPost'
+
+defineProps<{
+  posts: Array<GetPostResponseType>
+}>()
+</script>
 <template>
   <table class="table table-bordered table-striped">
     <thead>
